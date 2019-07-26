@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Exercise</title>
-		<link rel="stylesheet" type="text/css" href="src/styles/main.css">
+		<link rel="stylesheet" type="text/css" href="src/css/main.css">
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
 	</head>
 	<body>
@@ -33,6 +33,7 @@
 				<button @click="prevPage">Previous</button>
 				<button v-for="page in pages" @click="loadPage(page)">{{page}}</button>
 				<button @click="nextPage">Next</button>
+				<button @click="showAll">Show All</button>
 			</p>  
 		</div>
 		<script type="text/javascript" src="src/index.js"></script>

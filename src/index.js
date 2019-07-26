@@ -23,7 +23,7 @@ let generateCars = (function() {
 		}
 	})();
 	
-	return function(total = 15000) {
+	return function(total = 5000) {
 		let results = [];
 		for (let i = 0; i < total; i++) {
 			results.push({
@@ -53,6 +53,11 @@ const app = new Vue({
     },
     created: function() {
         this.cars = generateCars();
+		// fetch('https://api.myjson.com/bins/qweal')
+		// .then(res => res.json())
+		// .then(res => {
+		  // this.cars = res;
+		// });
     },
     methods: {
         sortBy: function(s) {
@@ -61,31 +66,40 @@ const app = new Vue({
             }
             this.sort.current = s;
         },
-        nextPage: function() {
-            if ((this.page.current * this.page.size) < this.cars.length) this.page.current++;
-        },
         prevPage: function() {
-            if (this.page.current > 1) this.page.current--;
+            if (this.page.current > 1) 
+				this.page.current--;
+        },
+		nextPage: function() {
+            if ((this.page.current * this.page.size) < this.cars.length) 
+				this.page.current++;
         },
         loadPage: function(n) {
             this.page.current = n;
-        }
+        },
+		showAll: function() {
+			this.page.current = 1;
+			this.page.size = this.cars.length;
+		}
     },
     computed: {
         sortedCars: function() {
+			let start = (this.page.current - 1) * this.page.size;
+			let end = this.page.current * this.page.size;
+			
 			let modifier = (this.sort.direction === 'asc') ? 1 : -1;
+			
             return this.cars.sort((a, b) => {
-                if (a[this.sort.current] > b[this.sort.current]) return 1 * modifier;
-                if (a[this.sort.current] < b[this.sort.current]) return -1 * modifier;
+                if (a[this.sort.current] > b[this.sort.current]) 
+					return 1 * modifier;
+                if (a[this.sort.current] < b[this.sort.current]) 
+					return -1 * modifier;
                 return 0;
-            }).filter((row, index) => {
-                let start = (this.page.current - 1) * this.page.size;
-                let end = this.page.current * this.page.size;
-                if (index >= start && index < end) return true;
-            });
+            }).filter((row, index) => (index >= start && index < end));
         },
         pages: function() {
-            let totalPages = Math.ceil(this.cars.length / this.page.size);
+            let totalPages = ~~(this.cars.length / this.page.size);
+			if (totalPages == 1) totalPages = 0;
             return [ ...Array(totalPages + 1).keys() ].slice(1);
         }
     }
