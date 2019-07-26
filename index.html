@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Exercise</title>
+		<link rel="stylesheet" type="text/css" href="src/styles/main.css">
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<h1>Exercise</h1>
+			<table>
+				<thead>
+					<tr>
+						<th @click="sortBy('id')">ID</th>
+						<th @click="sortBy('brand')">Brand</th>
+						<th @click="sortBy('model')">Model</th>
+						<th @click="sortBy('year')">Year</th>
+						<th @click="sortBy('drive')">Drive Type</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="car in sortedCars">
+						<td>{{car.id}}</td>
+						<td>{{car.brand}}</td>
+						<td>{{car.model}}</td>
+						<td>{{car.year}}</td>
+						<td>{{car.drive}}</td>
+					</tr>
+				</tbody>
+			</table>
+			<p>
+				<button @click="prevPage">Previous</button>
+				<button v-for="page in pages" @click="loadPage(page)">{{page}}</button>
+				<button @click="nextPage">Next</button>
+			</p>  
+		</div>
+		<script type="text/javascript" src="src/index.js"></script>
+	</body>
+</html>
