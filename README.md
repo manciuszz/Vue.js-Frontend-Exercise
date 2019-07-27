@@ -7,3 +7,9 @@ Output last clicked table cell data somewhere on the screen outside table. Chang
 Have a strong concern about performance  
 Commit source to a public repository (GitHub) and send the link  
 Would be nice to have a live demo online  
+
+# Live-Demo
+* [DEMO LINK](https://manciuszz.github.io/Vue.js-Frontend-Exercise/)
+
+# End-Result Overview
+![Overview](https://i.imgur.com/W6pJ5LJ.png)
