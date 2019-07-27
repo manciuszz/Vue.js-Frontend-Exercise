@@ -21,7 +21,7 @@ const virtualscroller = {
 		itemHeight: 35
 	}),
 	methods: {
-		updateTable() {
+		updateTable: function() {
 			let tableBody = this.$el;
 						
 			let startIndex = ~~(tableBody.scrollTop / this.itemHeight);
@@ -34,7 +34,7 @@ const virtualscroller = {
 			this.$emit("tablebody-scrolltop", tableBody.scrollTop); // This doesn't work with camelCase? really!? ....
 		},	
 	},
-	mounted() {
+	mounted: function() {
 		this.itemHeight = this.$parent.$refs.firstRow.clientHeight;
 		this.updateTable();
 	},

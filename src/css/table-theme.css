@@ -1,0 +1,37 @@
+.container__table {
+  overflow: hidden;
+  background: #7918f2;
+  background: -webkit-linear-gradient(-68deg, #ac32e4 , #4801ff);
+  background: -o-linear-gradient(-68deg, #ac32e4 , #4801ff);
+  background: -moz-linear-gradient(-68deg, #ac32e4 , #4801ff);
+  background: linear-gradient(-68deg, #ac32e4 , #4801ff);
+}
+
+.container__table table {
+  background-color: transparent;
+}
+
+.container__table td {
+  font-size: 14px;
+  color: #fff;
+  line-height: 1.4;
+}
+
+.container__table th {
+  font-size: 12px;
+  color: #fff;
+  line-height: 1.4;
+  text-transform: uppercase;
+
+  background-color: rgba(255,255,255,0.32);
+}
+
+.column {
+  width: 130px;
+  padding-left: 25px;
+}
+
+.row td {
+  padding-top: 18px;
+  padding-bottom: 14px;
+}

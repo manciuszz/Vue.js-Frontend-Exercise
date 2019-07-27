@@ -114,11 +114,11 @@ const app = new Vue({
                 return 0;
             }).filter((row, index) => (index >= start && index < end));
         },
-        pages: function() {
-            let totalPages = ~~(this.cars.length / this.page.size);
-			if (totalPages == 1) totalPages = 0;
-            return [ ...Array(totalPages + 1).keys() ].slice(1);
-        },
+        // pages: function() {
+            // let totalPages = ~~(this.cars.length / this.page.size);
+			// if (totalPages == 1) totalPages = 0;
+            // return [ ...Array(totalPages + 1).keys() ].slice(1);
+        // },
 		lastClickedCellData: function() {
 			return this.sortedCars.map((row) => row[this.lastClicked.cell]); 
 		}
