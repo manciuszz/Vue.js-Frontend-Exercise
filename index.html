@@ -5,6 +5,9 @@
 		<title>Exercise</title>
 		<link rel="stylesheet" type="text/css" href="src/css/main.css">
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
+		<!-- Defering these would be kinda nice? -->
+		<script type="text/javascript" src="src/utilities/utilities.js"></script> 
+		<script type="text/javascript" src="src/components/virtual-scroller.js"></script>
 	</head>
 	<body>
 		<div id="app">
@@ -13,7 +16,7 @@
 				<div class="container__table" @click="trackTable">
 					<table>
 						<thead>
-							<tr>
+							<tr ref="firstRow">
 								<th @click="sortBy('id')">ID</th>
 								<th @click="sortBy('brand')">Brand</th>
 								<th @click="sortBy('model')">Model</th>
@@ -21,19 +24,10 @@
 								<th @click="sortBy('drive')">Drive Type</th>
 							</tr>
 						</thead>
-						<tbody>
-							<tr v-for="car in sortedCars" :key="car.id" >
-								<td>{{car.id}}</td>
-								<td>{{car.brand}}</td>
-								<td>{{car.model}}</td>
-								<td>{{car.year}}</td>
-								<td>{{car.drive}}</td>
-							</tr>
-						</tbody>
 					</table>
+					<virtualscroller :items="sortedCars" :key="sortedCars[sortedCars.length - 1].id" @tablebody-scrolltop="scrollMirror"></virtualscroller>
 				</div>
-				
-				<div class="container__clickedCellData">
+				<div class="container__clickedCellData" ref="mirrorElement">
 					<p v-for="data in lastClickedCellData">{{data}}</p>
 				</div>
 			</div>
@@ -46,6 +40,6 @@
 				</p>  
 			</div>
 		</div>
-		<script type="text/javascript" src="src/index.js"></script>
+		<script type="text/javascript" src="src/app.js"></script>
 	</body>
 </html>

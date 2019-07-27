@@ -1,45 +1,8 @@
-let generateCars = (function() {
-	let random = (function() {
-		let defaultBrands = ["Acura", "Alfa Romeo", "Audi", "BMW", "Bentley", "Buick", "Cadillac", "Chevrolet", "Chrysler", "Dodge", "Fiat", "Ford", "GMC", "Genesis", "Honda", "Hyundai", "Infiniti", "Jaguar", "Jeep", "Kia", "Land Rover", "Lexus"];
-		let defaultModels = ["Tank", "Silver Edge", "Elvira", "Calm Tram", "Demigod", "Betty", "Inferno", "Jack rabbit", "Speedy Pie", "Death Proof", "Dumpster Fire", "Toronado", "Unicorn Rider", "Pandora", "Desert Fox", "KARR", "Chill Mobile"];
-		
-		let getRandomInt = function(min, max) {
-			return Math.floor(Math.random() * (max - min + 1)) + min;
-		};
-		
-		return {
-			trueOrFalse: function() {
-				return getRandomInt(0, 1);
-			},
-			brandName: function(brandArr = defaultBrands) {
-				return brandArr[getRandomInt(0, brandArr.length - 1)];
-			},
-			modelName: function(modelArr = defaultModels) {
-				return modelArr[getRandomInt(0, modelArr.length - 1)];
-			},
-			year: function(min, max) {
-				return getRandomInt(min, max);
-			}
-		}
-	})();
-	
-	return function(total = 5000) {
-		let results = [];
-		for (let i = 0; i < total; i++) {
-			results.push({
-				id: i + 1,
-				brand: random.brandName(),
-				model: random.modelName(),
-				year: random.year(1995, 2019),
-				drive: random.trueOrFalse() ? 'FWD' : 'BWD',
-			});
-		}
-		return results;
-	};
-})();
-
 const app = new Vue({
     el: '#app',
+	components: {
+		virtualscroller
+	},
     data: {
         cars: [{ id: "Loading.", brand: "Loading..", model: "Loading...", year: "Loading....", drive: "Loading...." }],
 		sort: {
@@ -48,17 +11,12 @@ const app = new Vue({
 		},
 		page: {
 			current: 1,
-			size: 20,
-			cache: { current: null, size: null },
+			size: 50,
 		},
 		lastClicked: {
 			cell: null,
 			row: null,
-			cache: { 
-				rowsArray: [],
-				columnNames: []
-			}
-		}
+		},
     },
     created: function() {
 		const controller = new AbortController();
@@ -69,7 +27,7 @@ const app = new Vue({
 		.then(res => {
 			this.cars = res;
 		}).catch( err => {
-			this.cars = generateCars(); // For extra performance we could generate this earlier...
+			this.cars = generateCars(5000); // For extra performance we could generate this earlier...
 		});
 		
 		setTimeout(() => { controller.abort() }, 1000); // Fetch was too slow and we care about performance...
@@ -94,11 +52,11 @@ const app = new Vue({
         },
 		toggleShowAll: function() {
 			if (this.page.size == this.cars.length) {
-				this.page.current = this.page.cache.current;
-				this.page.size = this.page.cache.size;
+				this.page.current = this.page._current;
+				this.page.size = this.page._size;
 			} else {
-				this.page.cache.current = this.page.current;
-				this.page.cache.size = this.page.size;
+				this.page._current = this.page.current;
+				this.page._size = this.page.size;
 				
 				this.page.current = 1;
 				this.page.size = this.cars.length;
@@ -111,28 +69,34 @@ const app = new Vue({
 			} else if (event.target.tagName != "TD") // What if we drag select stuff from table rows?
 				return;
 			
-			if (!this.lastClicked.cache.columnNames.length)
-				this.lastClicked.cache.columnNames = Object.keys(this.cars[this.cars.length - 1]); // Edge case - What if we have an extra column with duplicate data?... this will fail us eventually.
+			if (!this._columnNames) {
+				this._rowsArray = [];
+				this._columnNames = Object.keys(this.cars[this.cars.length - 1]); // Edge case - What if we have an extra column with duplicate data?... this will fail us eventually.
+				this._colorClass = "container__clickedCellData--color";
+			}						
 			
-			let rowIndex = this.lastClicked.cache.rowsArray.findIndex(row => row.contains(event.target));
+			let rowIndex = this._rowsArray.findIndex(row => row.contains(event.target));
 			if (rowIndex == -1) { // If we didn't find the row, it probably means our table has new data
-				this.lastClicked.cache.rowsArray = Array.from(document.querySelectorAll('.container__table tr'));
-				rowIndex = this.lastClicked.cache.rowsArray.findIndex(row => row.contains(event.target));
+				this._rowsArray = Array.from(document.querySelectorAll('.container__table tr'));
+				rowIndex = this._rowsArray.findIndex(row => row.contains(event.target));
 			}
 			
-			let columns = Array.from(this.lastClicked.cache.rowsArray[rowIndex].querySelectorAll('td'));
+			let columns = Array.from(this._rowsArray[rowIndex].querySelectorAll('td'));
 			let columnIndex = columns.findIndex(column => column == event.target);		
-			this.lastClicked.cell = this.lastClicked.cache.columnNames[columnIndex];
+			this.lastClicked.cell = this._columnNames[columnIndex];
 			
 			if (this.lastClicked.row) {
-				this.lastClicked.cache.rowsArray[this.lastClicked.row].classList.remove("container__clickedCellData--color");
+				this._rowsArray[this.lastClicked.row].classList.remove(this._colorClass);
 				this.lastClicked.row = null;
 			}
 			
 			if (rowIndex != this.lastClicked.row) {
-				this.lastClicked.cache.rowsArray[rowIndex].classList.add("container__clickedCellData--color");
+				this._rowsArray[rowIndex].classList.add(this._colorClass);
 				this.lastClicked.row = rowIndex;
 			}
+		},
+		scrollMirror: function(scrollTop) {
+			this.$refs.mirrorElement.scrollTo(0, scrollTop);
 		}
     },
     computed: {

@@ -10,10 +10,12 @@
 
 .container__clickedCellData {
     position: relative;
-    top: 45px;
+    top: 35px;
+	line-height: 35px;
 	width: 25%;
-    height: calc(100% - 35px);
+	height: 800px;
     text-align: center;
+	overflow-y: hidden;
 }
 
 .container__clickedCellData > p {
@@ -46,4 +48,21 @@
   cursor:pointer;
   background-color: black;
   color: white;
+}
+
+.container__tableBody {
+	position: relative;
+	overflow-x: hidden;
+	height: 800px;
+}
+
+.container__table table tbody { 
+	display: block; 
+	box-sizing: border-box;
+}
+
+.container__table table thead, .container__table table tbody tr { 
+	display: table; 
+	table-layout: fixed; 
+	width: 100%; 
 }
