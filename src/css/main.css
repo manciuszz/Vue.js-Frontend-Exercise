@@ -1,5 +1,7 @@
 .container {
 	display: flex;
+	padding-left: 100px;
+    padding-right: 100px;
 }
 
 .container__table {
@@ -8,7 +10,7 @@
 
 .container__clickedCellData {
     position: relative;
-    top: 35px;
+    top: 45px;
 	width: 25%;
     height: calc(100% - 35px);
     text-align: center;
@@ -22,6 +24,10 @@
 
 .container__clickedCellData--color {
 	background-color: gray;
+}
+
+.container__pagination {
+	
 }
 
 .container__table table {

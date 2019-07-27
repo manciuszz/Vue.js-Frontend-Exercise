@@ -41,14 +41,14 @@ let generateCars = (function() {
 const app = new Vue({
     el: '#app',
     data: {
-        cars: [],
+        cars: [{ id: "Loading.", brand: "Loading..", model: "Loading...", year: "Loading....", drive: "Loading...." }],
 		sort: {
 			current: 'id',
 			direction: 'asc'
 		},
 		page: {
 			current: 1,
-			size: 25,
+			size: 20,
 			cache: { current: null, size: null },
 		},
 		lastClicked: {
@@ -69,7 +69,7 @@ const app = new Vue({
 		.then(res => {
 			this.cars = res;
 		}).catch( err => {
-			this.cars = generateCars();
+			this.cars = generateCars(); // For extra performance we could generate this earlier...
 		});
 		
 		setTimeout(() => { controller.abort() }, 1000); // Fetch was too slow and we care about performance...
@@ -108,11 +108,11 @@ const app = new Vue({
 			if (event.target.tagName == "TH") { // We clicked on the sort buttons
 				this.lastClicked.cell = this.sort.current;
 				return;
-			} else if (event.target.tagName != "TD") // What if we drag select stuff?
+			} else if (event.target.tagName != "TD") // What if we drag select stuff from table rows?
 				return;
 			
 			if (!this.lastClicked.cache.columnNames.length)
-				this.lastClicked.cache.columnNames = Object.keys(this.cars[this.cars.length - 1]); // What if we have an extra column with duplicate data?... this will fail
+				this.lastClicked.cache.columnNames = Object.keys(this.cars[this.cars.length - 1]); // Edge case - What if we have an extra column with duplicate data?... this will fail us eventually.
 			
 			let rowIndex = this.lastClicked.cache.rowsArray.findIndex(row => row.contains(event.target));
 			if (rowIndex == -1) { // If we didn't find the row, it probably means our table has new data
@@ -121,12 +121,15 @@ const app = new Vue({
 			}
 			
 			let columns = Array.from(this.lastClicked.cache.rowsArray[rowIndex].querySelectorAll('td'));
-			let columnIndex = columns.findIndex(column => column == event.target);
-						
+			let columnIndex = columns.findIndex(column => column == event.target);		
 			this.lastClicked.cell = this.lastClicked.cache.columnNames[columnIndex];
+			
+			if (this.lastClicked.row) {
+				this.lastClicked.cache.rowsArray[this.lastClicked.row].classList.remove("container__clickedCellData--color");
+				this.lastClicked.row = null;
+			}
+			
 			if (rowIndex != this.lastClicked.row) {
-				if (this.lastClicked.row)
-					this.lastClicked.cache.rowsArray[this.lastClicked.row].classList.remove("container__clickedCellData--color");
 				this.lastClicked.cache.rowsArray[rowIndex].classList.add("container__clickedCellData--color");
 				this.lastClicked.row = rowIndex;
 			}
@@ -152,7 +155,7 @@ const app = new Vue({
 			if (totalPages == 1) totalPages = 0;
             return [ ...Array(totalPages + 1).keys() ].slice(1);
         },
-		lastClickedData: function() {
+		lastClickedCellData: function() {
 			return this.sortedCars.map((row) => row[this.lastClicked.cell]); 
 		}
     }
