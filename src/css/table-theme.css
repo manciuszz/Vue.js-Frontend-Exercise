@@ -26,11 +26,6 @@
   background-color: rgba(255,255,255,0.32);
 }
 
-.column {
-  width: 130px;
-  padding-left: 25px;
-}
-
 .row td {
   padding-top: 18px;
   padding-bottom: 14px;
