@@ -86,12 +86,12 @@ const app = new Vue({
 			let columnIndex = columns.findIndex(column => column == event.target);		
 			this.lastClicked.cell = this._columnNames[columnIndex];
 			
-			if (this.lastClicked.row) {
+			if (this.lastClicked.row && this._rowsArray[rowIndex] != this.lastClicked.row) {
 				this.lastClicked.row.classList.remove(this._colorClass);
 				this.lastClicked.row = null;
 			}
 			
-			if (rowIndex != this.lastClicked.row) {
+			if (!this.lastClicked.row) {
 				this.lastClicked.row = this._rowsArray[rowIndex];
 				this.lastClicked.row.classList.add(this._colorClass);
 			}
