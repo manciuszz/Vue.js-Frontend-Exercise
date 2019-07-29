@@ -27,7 +27,7 @@ const app = new Vue({
 		.then(res => {
 			this.cars = res;
 		}).catch( err => {
-			this.cars = generateCars(5000); // For extra performance we could generate this earlier...
+			this.cars = generateCars(5000); // For extra 'perceived' performance we could generate this earlier...
 		});
 		
 		setTimeout(() => { controller.abort() }, 1000); // Fetch was too slow and we care about performance...
@@ -73,11 +73,12 @@ const app = new Vue({
 				this._rowsArray = [];
 				this._columnNames = Object.keys(this.cars[this.cars.length - 1]); // Edge case - What if we have an extra column with duplicate data?... this will fail us eventually.
 				this._colorClass = "container__clickedCellData--color";
+				this._rowElementClass = ".container__table tr";
 			}						
 			
 			let rowIndex = this._rowsArray.findIndex(row => row.contains(event.target));
 			if (rowIndex == -1) { // If we didn't find the row, it probably means our table has new data
-				this._rowsArray = Array.from(document.querySelectorAll('.container__table tr'));
+				this._rowsArray = Array.from(document.querySelectorAll(this._rowElementClass));
 				rowIndex = this._rowsArray.findIndex(row => row.contains(event.target));
 			}
 			
@@ -86,13 +87,13 @@ const app = new Vue({
 			this.lastClicked.cell = this._columnNames[columnIndex];
 			
 			if (this.lastClicked.row) {
-				this._rowsArray[this.lastClicked.row].classList.remove(this._colorClass);
+				this.lastClicked.row.classList.remove(this._colorClass);
 				this.lastClicked.row = null;
 			}
 			
 			if (rowIndex != this.lastClicked.row) {
-				this._rowsArray[rowIndex].classList.add(this._colorClass);
-				this.lastClicked.row = rowIndex;
+				this.lastClicked.row = this._rowsArray[rowIndex];
+				this.lastClicked.row.classList.add(this._colorClass);
 			}
 		},
 		scrollMirror: function(scrollTop) {
